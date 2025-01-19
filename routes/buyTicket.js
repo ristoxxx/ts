@@ -23,7 +23,7 @@ router.post('/ostaa', async (req, res) => {
 
   try {
     await docClient.put(params).promise();
-    res.status(200).json({ message: 'Lippu ostettu onnistuneesti', ticketId });
+    res.status(200).json({ message: 'Lippu ostettu onnistuneesti', ticketId, purchaseTime, expiryTime, phoneNumber, city });
   } catch (error) {
     res.status(500).json({ error: 'Lipun osto epäonnistui', details: error });
   }

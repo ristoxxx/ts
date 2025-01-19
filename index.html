@@ -1,0 +1,164 @@
+<!--
+File: index.html
+Created Date: Sunday January 19th 2025 08:58:41
+Author: ristoxxx@github.com
+-----
+Last Modified: Sunday January 19th 2025 10:15:52
+Modified By: ristoxxx@github.com
+-----
+Copyright (c) 2025 ristoxxx@github.com
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lipunmyyntijärjestelmä</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+    label, input, button {
+      margin-bottom: 10px;
+      display: block;
+    }
+    .response {
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Lipunmyyntijärjestelmä</h1>
+  <h2>Tarkista kaupungin saatavuus</h2>
+  <label for="city">Kaupunki:</label>
+  <input type="text" id="city" name="city">
+  <button id="checkAvailability">Tarkista saatavuus</button>
+  <div class="response" id="availabilityResponse"></div>
+
+  <h2>Lisää kaupunki</h2>
+  <label for="newCity">Kaupunki:</label>
+  <input type="text" id="newCity" name="newCity">
+  <label for="availability">Saatavuus:</label>
+  <input type="number" id="availability" name="availability">
+  <button id="addCity">Lisää kaupunki</button>
+  <div class="response" id="addCityResponse"></div>
+
+  <h2>Poista kaupunki</h2>
+  <label for="cityToRemove">Kaupunki:</label>
+  <input type="text" id="cityToRemove" name="cityToRemove">
+  <label for="availabilityToRemove">Saatavuus:</label>
+  <input type="number" id="availabilityToRemove" name="availabilityToRemove">
+  <button id="removeCity">Poista kaupunki</button>
+  <div class="response" id="removeCityResponse"></div>
+
+  <h2>Ostaa lippu</h2>
+  <label for="phoneNumber">Puhelinnumero:</label>
+  <input type="text" id="phoneNumber" name="phoneNumber">
+  <label for="cityToBuy">Kaupunki:</label>
+  <input type="text" id="cityToBuy" name="cityToBuy">
+  <button id="buyTicket">Osta lippu</button>
+  <div class="response" id="buyTicketResponse"></div>
+
+  <script>
+    document.getElementById('checkAvailability').addEventListener('click', async () => {
+      const city = document.getElementById('city').value;
+      const responseDiv = document.getElementById('availabilityResponse');
+      const localhostAddress = 'http://localhost:3000/api';
+      responseDiv.textContent = 'Tarkistetaan...';
+
+      try {
+        const response = await fetch(`${localhostAddress}/saatavuus/${city}`);
+        const result = await response.json();
+        if (response.ok) {
+          responseDiv.textContent = result.message;
+        } else {
+          responseDiv.textContent = `Virhe: ${result.message}`;
+        }
+      } catch (error) {
+        responseDiv.textContent = 'Virhe: ' + error.message;
+      }
+    });
+
+    document.getElementById('addCity').addEventListener('click', async () => {
+      const city = document.getElementById('newCity').value;
+      const availability = document.getElementById('availability').value;
+      const responseDiv = document.getElementById('addCityResponse');
+      const localhostAddress = 'http://localhost:3000/api';
+      responseDiv.textContent = 'Lisätään kaupunki...';
+
+      try {
+        const response = await fetch(`${localhostAddress}/kaupunki/`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ cityName: city, availability: Number(availability) })
+        });
+        const result = await response.json();
+        if (response.ok) {
+          responseDiv.textContent = result.message;
+        } else {
+          responseDiv.textContent = `Virhe: ${result.error}`;
+        }
+      } catch (error) {
+        responseDiv.textContent = 'Virhe: ' + error.message;
+      }
+    });
+
+    document.getElementById('removeCity').addEventListener('click', async () => {
+      const city = document.getElementById('cityToRemove').value;
+      const availability = document.getElementById('availabilityToRemove').value;
+      const responseDiv = document.getElementById('removeCityResponse');
+      const localhostAddress = 'http://localhost:3000/api';
+      responseDiv.textContent = 'Poistetaan kaupunki...';
+
+      try {
+        const response = await fetch(`${localhostAddress}/poista/`, {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ cityName: city, availability: Number(availability) })
+        });
+        const result = await response.json();
+        if (response.ok) {
+          responseDiv.textContent = result.message;
+        } else {
+          responseDiv.textContent = `Virhe: ${result.error}`;
+        }
+      } catch (error) {
+        responseDiv.textContent = 'Virhe: ' + error.message;
+      }
+      });
+
+    document.getElementById('buyTicket').addEventListener('click', async () => {
+      const phoneNumber = document.getElementById('phoneNumber').value;
+      const city = document.getElementById('cityToBuy').value;
+      const responseDiv = document.getElementById('buyTicketResponse');
+      const localhostAddress = 'http://localhost:3000/api';
+      responseDiv.textContent = 'Ostetaan lippu...';
+
+      try {
+        const response = await fetch(`${localhostAddress}/ostaa/`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ phoneNumber, city })
+        });
+        const result = await response.json();
+        if (response.ok) {
+          responseDiv.textContent = result.message;
+        } else {
+          responseDiv.textContent = `Virhe: ${result.error}`;
+        }
+      } catch (error) {
+        responseDiv.textContent = 'Virhe: ' + error.message;
+      }
+    });
+
+  </script>
+</body>
+</html>

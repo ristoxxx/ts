@@ -1,5 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const cors = require('cors');
 
 const buyTicketRoute = require('./routes/buyTicket');
 const checkTicketRoute = require('./routes/checkTicket');
@@ -10,6 +11,8 @@ const removeCityRoute = require('./routes/removeCity');
 const app = express();
 const port = 3000;
 
+app.use(cors());
+app.use(express.static('public'));
 app.use(bodyParser.json());
 app.use('/api', buyTicketRoute);
 app.use('/api', checkTicketRoute);
